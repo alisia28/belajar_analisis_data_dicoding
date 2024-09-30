@@ -17,7 +17,7 @@ st.title("Air Quality Data Analysis")
 pollutant = st.sidebar.selectbox("Select a Pollutant", ['PM2.5', 'PM10', 'NO2', 'CO'])
 
 # Layout for different sections (split in columns)
-col1, col2 = st.columns([2, 1])
+col1 = st.columns(1)[0]  # Only one column
 
 with col1:
     # Function to plot trends and moving averages
@@ -47,35 +47,6 @@ with col1:
         st.write(f"Slope (Trend in {pollutant}): {model.coef_[0]}")
     
     plot_trends(combined_data, pollutant)
-
-with col2:
-    st.subheader("Air Quality Classification Based on PM2.5 Levels")
-    
-    # Function to classify air quality
-    def classify_air_quality(pm25_value):
-        if pm25_value <= 50:
-            return 'Good'
-        elif 50 < pm25_value <= 100:
-            return 'Moderate'
-        elif 100 < pm25_value <= 150:
-            return 'Unhealthy for Sensitive Groups'
-        elif 150 < pm25_value <= 200:
-            return 'Unhealthy'
-        else:
-            return 'Very Unhealthy'
-    
-    # Apply the classification function to the PM2.5 column
-    combined_data['AQI_Category'] = combined_data['PM2.5'].apply(classify_air_quality)
-    
-    # Display the overall distribution of air quality categories
-    aqi_distribution = combined_data['AQI_Category'].value_counts()
-    fig_aqi, ax_aqi = plt.subplots(figsize=(10, 6))
-    aqi_distribution.plot(kind='bar', ax=ax_aqi)
-    ax_aqi.set_title('Overall Distribution of Air Quality Categories')
-    ax_aqi.set_ylabel('Number of Days')
-    ax_aqi.set_xlabel('AQI Category')
-    plt.xticks(rotation=45)
-    st.pyplot(fig_aqi)
 
 # Split seasonal patterns and heatmaps into two columns
 col3, col4 = st.columns(2)
